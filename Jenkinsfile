@@ -2,16 +2,16 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY_CREDENTIALS = credentials('docker-registry-credentials-id')
-        DOCKER_REGISTRY = "your-docker-registry-url"
-        KUBE_CONFIG = credentials('kube-config-credentials-id')
-        KUBE_NAMESPACE = "your-kubernetes-namespace"
+        REGISTRY_CREDENTIALS = credentials('dockerhubcreds')
+        DOCKER_REGISTRY = "simbu777/docker"
+        KUBE_CONFIG = credentials('kubeconfigcreds')
+        KUBE_NAMESPACE = "default"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://your-git-repo-url.git'
+                git 'https://github.com/simbu777/Jenkinsdemo.git'
             }
         }
 
@@ -39,7 +39,7 @@ pipeline {
                 stage('Push Frontend Image') {
                     steps {
                         script {
-                            docker.withRegistry("https://${DOCKER_REGISTRY}", 'docker-registry-credentials-id') {
+                            docker.withRegistry("https://${DOCKER_REGISTRY}", 'dockerhubcreds') {
                                 docker.image("${DOCKER_REGISTRY}/frontend:${env.BUILD_ID}").push()
                             }
                         }
@@ -48,7 +48,7 @@ pipeline {
                 stage('Push Backend Image') {
                     steps {
                         script {
-                            docker.withRegistry("https://${DOCKER_REGISTRY}", 'docker-registry-credentials-id') {
+                            docker.withRegistry("https://${DOCKER_REGISTRY}", 'dockerhubcreds') {
                                 docker.image("${DOCKER_REGISTRY}/backend:${env.BUILD_ID}").push()
                             }
                         }
